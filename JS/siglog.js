@@ -1,6 +1,6 @@
 // Importa las funciones necesarias desde los SDK de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 
@@ -19,23 +19,47 @@ import { getFirestore, collection, addDoc } from "https://www.gstatic.com/fireba
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-// Funciones de autenticación
-
-// Iniciar sesión
+// Inicio de sesión-->
 export async function login(email, password) {
   try {
+    // Verifica que los parámetros se están pasando correctamente-->
+    console.log("Email:", email, "Password:", password);
+
+    // Intentar iniciar sesión en Firebase Auth-->
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    alert('Ingresó con éxito: ' + userCredential.user.email);
+
+    // Inicio de sesión exitoso-->
+    alert("Inicio de sesión exitoso. Redirigiendo...");
+    return userCredential.user; 
   } catch (error) {
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-      alert('Error al intentar ingresar: ' + error.message);
+    // Manejo de errores-->
+    if (error.code === "auth/wrong-password") {
+      alert("Contraseña incorrecta. Por favor, verifica tus credenciales.");
+    } else if (error.code === "auth/user-not-found") {
+      alert("El correo no está registrado. Por favor, verifica tus credenciales.");
     } else {
-      alert('Error desconocido: ' + error.message);
+      alert("Error al iniciar sesión: " + error.message);
     }
+    throw error; 
   }
 }
 
-// Registro
+// Simulación de autenticación (solo para pruebas locales)-->
+async function iniciarSesion(correo, contrasena) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const usuarios = [
+        { correo: "test@correo.com", contrasena: "123456" }
+      ];
+      const usuarioValido = usuarios.find(
+        (usuario) => usuario.correo === correo && usuario.contrasena === contrasena
+      );
+      resolve(!!usuarioValido);
+    }, 1000);
+  });
+};
+
+// Registro-->
 export async function signup(email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -45,7 +69,7 @@ export async function signup(email, password) {
   }
 }
 
-// Función para agregar datos a Firestore (mi base de datos)
+// Función para agregar datos a Firestore (mi base de datos)-->
 export async function addData(collectionName, data) {
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
@@ -54,4 +78,14 @@ export async function addData(collectionName, data) {
     alert('Error al agregar datos: ' + error.message);
   }
 }
+
+const auth2 = getAuth();
+onAuthStateChanged(auth2, (user) => {
+  if (!user) {
+    // Si no hay usuario autenticado, redirigir al login-->
+    alert("No estás autenticado. Redirigiendo al inicio de sesión...");
+    window.location.href = "./login.html";
+  }
+});
+
 
