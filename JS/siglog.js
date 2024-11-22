@@ -79,12 +79,12 @@ export async function addData(collectionName, data) {
   }
 }
 
-const auth2 = getAuth();
+/*const auth2 = getAuth();
 onAuthStateChanged(auth2, (user) => {
   if (!user) {
     // Si no hay usuario autenticado, redirigir al login-->
     alert("No estás autenticado. Redirigiendo al inicio de sesión...");
     window.location.href = "./login.html";
   }
-});
+});*/
 
