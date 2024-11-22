@@ -45,7 +45,7 @@ export async function login(email, password) {
 }
 
 // Simulación de autenticación (solo para pruebas locales)-->
-async function iniciarSesion(correo, contrasena) {
+/*async function iniciarSesion(correo, contrasena) {
   return new Promise((resolve) => {
     setTimeout(() => {
       const usuarios = [
@@ -57,7 +57,7 @@ async function iniciarSesion(correo, contrasena) {
       resolve(!!usuarioValido);
     }, 1000);
   });
-};
+};*/
 
 // Registro-->
 export async function signup(email, password) {
